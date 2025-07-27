@@ -13,44 +13,80 @@ This dashboard is a continuation of the StudyBuddy project, utilizing the same M
 ## 🏗️ Architecture
 
 ```
-StudyBuddy Project
-├── Frontend (StudyBuddy App)
-├── Backend (StudyBuddy API)
-└── Security Middleware
-    └── Logs to MongoDB (threat_analysis.securityevents)
-        └── ThreatGuard Dashboard (This Project)
-            ├── Frontend (React Dashboard)
-            └── Backend (Node.js API)
+StudyBuddy Project Ecosystem
+├── StudyBuddy Application
+│   ├── Frontend (StudyBuddy App)
+│   ├── Backend (StudyBuddy API)
+│   └── Security Middleware
+│       └── Logs to MongoDB (threat_analysis.securityevents)
+│
+└── ThreatGuard Dashboard (This Project)
+    ├── Frontend (React Dashboard)
+    │   ├── React Components
+    │   ├── Custom Hooks
+    │   └── API Services
+    └── Backend (Node.js API)
+        ├── Express Server
+        ├── MongoDB Connection
+        └── RESTful API Endpoints
+```
+
+### 🔄 Data Flow Architecture
+
+```
+StudyBuddy Security Events
+    ↓ (MongoDB Logging)
+threat_analysis.securityevents Collection
+    ↓ (API Calls)
+ThreatGuard Backend (server.js)
+    ↓ (REST API)
+ThreatGuard Frontend (React App)
+    ↓ (User Interface)
+Dashboard Visualization & Monitoring
 ```
 
 ## 📁 Project Structure
 
 ```
-threatguard-dashboard/
-├── 📁 src/                          # Frontend React application
-│   ├── 📁 components/               # React components
-│   │   ├── Header.js               # Dashboard header with live status
-│   │   ├── StatsCards.js           # Key statistics cards
-│   │   ├── ThreatChart.js          # Timeline chart of threats
-│   │   ├── SeverityDistribution.js # Pie chart of threat severity
-│   │   ├── AttackPatternChart.js   # Bar chart of attack patterns
-│   │   ├── ThreatTable.js          # Detailed threat events table
-│   │   └── RecentActivity.js       # Recent 10-minute activity
-│   ├── 📁 services/                # API services
-│   │   └── api.js                  # Axios API client
-│   ├── 📁 hooks/                   # Custom React hooks
-│   │   └── useSecurityEvents.js    # Data fetching and management
-│   ├── App.js                      # Main application component
-│   ├── index.js                    # Application entry point
-│   └── index.css                   # Global styles
-├── 📁 server/                      # Backend Node.js API
-│   ├── server.js                   # Express server with MongoDB connection
-│   ├── package.json                # Backend dependencies
-│   └── .env                        # Backend environment variables
-├── package.json                    # Frontend dependencies
-├── .env                            # Frontend environment variables
-├── .gitignore                      # Git ignore rules
-└── README.md                       # This file
+dashboard/
+├── 📁 frontend/                     # React Frontend Application
+│   ├── 📁 public/                  # Static assets
+│   │   ├── index.html             # Main HTML file
+│   │   ├── manifest.json          # PWA manifest
+│   │   └── favicon.ico            # App icon
+│   ├── 📁 src/                    # React source code
+│   │   ├── 📁 components/         # React components
+│   │   │   ├── Header.js         # Dashboard header with live status
+│   │   │   ├── Header.css        # Header styles
+│   │   │   ├── StatsCards.js     # Key statistics cards
+│   │   │   ├── StatsCards.css    # Stats cards styles
+│   │   │   ├── ThreatChart.js    # Timeline chart of threats
+│   │   │   ├── ThreatChart.css   # Chart styles
+│   │   │   ├── SeverityDistribution.js # Pie chart of threat severity
+│   │   │   ├── SeverityDistribution.css # Distribution styles
+│   │   │   ├── AttackPatternChart.js   # Bar chart of attack patterns
+│   │   │   ├── AttackPatternChart.css  # Pattern chart styles
+│   │   │   ├── ThreatTable.js    # Detailed threat events table
+│   │   │   └── ThreatTable.css   # Table styles
+│   │   ├── 📁 services/          # API services
+│   │   │   └── api.js            # Axios API client
+│   │   ├── 📁 hooks/             # Custom React hooks
+│   │   │   └── useSecurityEvents.js # Data fetching and management
+│   │   ├── App.js                # Main application component
+│   │   ├── App.css               # Main app styles
+│   │   ├── index.js              # Application entry point
+│   │   └── index.css             # Global styles
+│   ├── package.json              # Frontend dependencies
+│   ├── package-lock.json         # Dependency lock file
+│   └── start-servers.js          # Concurrent server startup script
+│
+├── 📁 server/                     # Node.js Backend API
+│   ├── server.js                 # Express server with MongoDB connection
+│   ├── package.json              # Backend dependencies
+│   └── package-lock.json         # Dependency lock file
+│
+├── .gitignore                    # Git ignore rules
+└── README.md                     # This documentation file
 ```
 
 ## 🚀 Quick Start
@@ -71,9 +107,9 @@ cd threatguard-dashboard
 
 ### 2. Environment Configuration
 
-#### Frontend Environment (Root Directory)
+#### Frontend Environment (Frontend Directory)
 
-Create `.env` file in the root directory:
+Create `.env` file in the `frontend/` directory:
 
 ```env
 # Frontend Environment Variables
@@ -96,8 +132,14 @@ PORT=3001
 #### Frontend Dependencies
 
 ```bash
+# Navigate to frontend directory
+cd frontend
+
 # Install frontend dependencies
 npm install
+
+# Return to root directory
+cd ..
 ```
 
 #### Backend Dependencies
@@ -118,6 +160,9 @@ cd ..
 #### Option A: Start Both Servers (Recommended)
 
 ```bash
+# Navigate to frontend directory
+cd frontend
+
 # Start both frontend and backend concurrently
 npm run dev
 ```
@@ -132,6 +177,7 @@ npm run dev
 
 **Terminal 2 - Frontend:**
 ```bash
+cd frontend
 npm start
 ```
 
@@ -143,7 +189,7 @@ npm start
 
 ## 🔧 Environment Variables Explained
 
-### Frontend (.env)
+### Frontend (frontend/.env)
 
 | Variable | Description | Example |
 |----------|-------------|---------|
@@ -281,10 +327,11 @@ npm run dev
 ### Production Build
 ```bash
 # Frontend build
+cd frontend
 npm run build
 
 # Backend start
-cd server
+cd ../server
 npm start
 ```
 
@@ -317,7 +364,7 @@ Error: Cannot find module 'express'
 ```
 Error: Cannot resolve 'recharts'
 ```
-**Solution**: Run `npm install` in the root directory
+**Solution**: Run `npm install` in the frontend directory
 
 #### 4. Environment Variables Not Loading
 ```
@@ -332,6 +379,7 @@ cd server
 DEBUG=* npm run dev
 
 # Frontend with detailed errors
+cd frontend
 REACT_APP_DEBUG=true npm start
 ```
 
