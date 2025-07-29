@@ -393,7 +393,6 @@ REACT_APP_DEBUG=true npm start
 
 ### Backend
 - **Database Indexing**: Optimized MongoDB queries
-- **Caching**: Redis integration (optional)
 - **Compression**: Gzip compression enabled
 - **Connection Pooling**: Efficient database connections
 
@@ -411,7 +410,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🙏 Acknowledgments
 
-- **StudyBuddy Team**: For the security logging infrastructure
+- **StudyBuddy Team (ME)**: For the security logging infrastructure
 - **MongoDB**: For the robust database solution
 - **React Community**: For the excellent frontend framework
 - **Recharts**: For the beautiful chart components
@@ -422,7 +421,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 For support and questions:
 - **Issues**: Create an issue in the repository
 - **Documentation**: Check the inline code comments
-- **Community**: Join our development community
+- **Community**: Join our development community if u wanna.
 
 ---
 
