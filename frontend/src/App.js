@@ -16,7 +16,7 @@ function App() {
   const [filters, setFilters] = useState({
     severity: 'all',
     eventType: 'all',
-    timeRange: '24h'
+    timeRange: 'all'  // Changed from '24h' to 'all' to show all data
   });
 
   // Use the custom hook for security events
@@ -66,7 +66,7 @@ function App() {
 
   // Handle export functionality
   const handleExport = () => {
-    exportEvents('json', filters);
+    exportEvents('pdf', filters);
   };
 
   if (loading) {
@@ -142,14 +142,6 @@ function App() {
                 onExport={handleExport}
                 onUpdateStatus={updateEventStatus}
               />
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              
             </motion.div>
           </div>
         </motion.div>

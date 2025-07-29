@@ -100,17 +100,35 @@ export const useSecurityEvents = () => {
     try {
       const blob = await securityEventsAPI.exportEvents(format, filters);
       
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `security-events-${new Date().toISOString().split('T')[0]}.${format}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-      
-      toast.success('Events exported successfully');
+      if (format === 'pdf') {
+        // For PDF (HTML), open in new window for printing
+        const url = window.URL.createObjectURL(blob);
+        const newWindow = window.open(url, '_blank');
+        if (newWindow) {
+          newWindow.focus();
+        } else {
+          // Fallback if popup is blocked
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `security-events-${new Date().toISOString().split('T')[0]}.html`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        window.URL.revokeObjectURL(url);
+        toast.success('PDF report opened in new window. Use Ctrl+P to save as PDF.');
+      } else {
+        // For other formats, download directly
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `security-events-${new Date().toISOString().split('T')[0]}.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        toast.success('Events exported successfully');
+      }
     } catch (err) {
       toast.error('Failed to export events');
       console.error('Error exporting events:', err);
@@ -142,15 +160,6 @@ export const useSecurityEvents = () => {
   // Initial data fetch
   useEffect(() => {
     fetchEvents();
-  }, [fetchEvents]);
-
-  // Auto-refresh every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchEvents();
-    }, 30000);
-
-    return () => clearInterval(interval);
   }, [fetchEvents]);
 
   return {

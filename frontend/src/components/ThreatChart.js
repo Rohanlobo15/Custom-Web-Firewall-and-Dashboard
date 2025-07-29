@@ -1,36 +1,42 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
-import { format, subHours } from 'date-fns';
+import { format, subDays, startOfDay, endOfDay } from 'date-fns';
 import { TrendingUp } from 'lucide-react';
 import './ThreatChart.css';
 
 const ThreatChart = ({ data }) => {
-  // Process data for chart
+  // Process data for chart - show last 30 days instead of 24 hours
   const processChartData = () => {
     const now = new Date();
     const timeSlots = [];
     
-    // Create time slots for the last 24 hours
-    for (let i = 23; i >= 0; i--) {
-      const time = subHours(now, i);
+    // Create time slots for the last 30 days
+    for (let i = 29; i >= 0; i--) {
+      const date = subDays(now, i);
+      const dayStart = startOfDay(date);
+      const dayEnd = endOfDay(date);
+      
       timeSlots.push({
-        time: format(time, 'HH:mm'),
-        timestamp: time.getTime(),
+        date: format(date, 'MMM dd'),
+        timestamp: dayStart.getTime(),
+        dayEnd: dayEnd.getTime(),
         threats: 0
       });
     }
 
-    // Count threats in each time slot
+    // Count threats in each day slot
     data.forEach(threat => {
       const threatTime = new Date(threat.timestamp);
-      const hourDiff = Math.floor((now.getTime() - threatTime.getTime()) / (1000 * 60 * 60));
+      const threatTimestamp = threatTime.getTime();
       
-      if (hourDiff >= 0 && hourDiff < 24) {
-        const slotIndex = 23 - hourDiff;
-        if (timeSlots[slotIndex]) {
-          timeSlots[slotIndex].threats += 1;
-        }
+      // Find which day slot this threat belongs to
+      const slot = timeSlots.find(slot => 
+        threatTimestamp >= slot.timestamp && threatTimestamp <= slot.dayEnd
+      );
+      
+      if (slot) {
+        slot.threats += 1;
       }
     });
 
@@ -43,7 +49,7 @@ const ThreatChart = ({ data }) => {
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip">
-          <p className="tooltip-label">{`Time: ${label}`}</p>
+          <p className="tooltip-label">{`Date: ${label}`}</p>
           <p className="tooltip-value">{`Threats: ${payload[0].value}`}</p>
         </div>
       );
@@ -63,7 +69,7 @@ const ThreatChart = ({ data }) => {
           <TrendingUp className="chart-icon" />
           <div>
             <h3 className="chart-title">Threat Activity Timeline</h3>
-            <p className="chart-subtitle">Last 24 hours threat detection</p>
+            <p className="chart-subtitle">Last 30 days threat detection</p>
           </div>
         </div>
         <div className="chart-stats">
@@ -91,11 +97,12 @@ const ThreatChart = ({ data }) => {
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
             <XAxis 
-              dataKey="time" 
+              dataKey="date" 
               stroke="rgba(255, 255, 255, 0.6)"
               fontSize={12}
               tickLine={false}
               axisLine={false}
+              interval="preserveStartEnd"
             />
             <YAxis 
               stroke="rgba(255, 255, 255, 0.6)"
@@ -123,9 +130,6 @@ const ThreatChart = ({ data }) => {
             <div className="legend-color" style={{ background: '#ef4444' }}></div>
             <span>Threat Events</span>
           </div>
-        </div>
-        <div className="chart-actions">
-          <button className="btn btn-secondary">Export Data</button>
         </div>
       </div>
     </motion.div>

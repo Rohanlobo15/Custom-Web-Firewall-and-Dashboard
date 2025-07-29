@@ -97,6 +97,9 @@
   color: #ffffff;
   font-size: 0.875rem;
   cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .filter-select:focus {
@@ -104,11 +107,28 @@
   border-color: #667eea;
 }
 
+.filter-select::-ms-expand {
+  display: none;
+}
+
+/* Style dropdown options for better visibility */
+.filter-select option {
+  background-color: #ffffff;
+  color: #000000;
+  padding: 0.5rem;
+}
+
+.filter-select option:hover {
+  background-color: #f3f4f6;
+}
+
 .table-container {
   flex: 1;
   overflow: auto;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  min-height: 400px;
 }
 
 .threat-table {

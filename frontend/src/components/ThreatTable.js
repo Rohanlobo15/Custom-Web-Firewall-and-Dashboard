@@ -101,7 +101,7 @@ const ThreatTable = ({ data, filters, onFilterChange, onExport, onUpdateStatus }
           
           <button className="btn btn-secondary" onClick={onExport}>
             <Download className="btn-icon" />
-            Export
+            Export PDF
           </button>
         </div>
       </div>

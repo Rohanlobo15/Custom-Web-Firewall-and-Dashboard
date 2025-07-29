@@ -100,7 +100,7 @@ app.get('/api/health', (req, res) => {
 // Get all security events with filtering
 app.get('/api/securityevents', async (req, res) => {
   try {
-    const { severity, eventType, timeRange, limit = 100, page = 1 } = req.query;
+    const { severity, eventType, timeRange, limit = 1000, page = 1 } = req.query;
     
     let query = {};
     
@@ -152,7 +152,7 @@ app.get('/api/securityevents/severity/:severity', async (req, res) => {
     const { severity } = req.params;
     const events = await SecurityEvent.find({ severity })
       .sort({ timestamp: -1 })
-      .limit(100)
+      .limit(1000)
       .lean();
     
     res.json(events);
@@ -177,7 +177,7 @@ app.get('/api/securityevents/timerange', async (req, res) => {
     
     const events = await SecurityEvent.find(query)
       .sort({ timestamp: -1 })
-      .limit(100)
+      .limit(1000)
       .lean();
     
     res.json(events);
